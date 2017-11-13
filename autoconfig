@@ -1,0 +1,6 @@
+#!/bin/bash
+var="$@"
+git init
+git remote add upstream $var
+git pull
+git push --set-upstream upstream master
