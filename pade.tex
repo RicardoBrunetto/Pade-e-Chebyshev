@@ -3,7 +3,7 @@
 
 \sloppy
 
-\title{Aproximações de Padé}
+\title{Aproximantes de Padé}
 
 \author{Ricardo Henrique Brunetto\inst{1}}
 
@@ -18,7 +18,87 @@
 
   \section{Introdução}
 
+	Datado da década de 1890 e de autoria de Henri Padré,  o \textbf{Aproximante de Padé} é
+	a melhor aproximação conhecida  de uma função através de uma função racional de determinada ordem.
+	Nesta técnica, inclusive, o aproximante de uma série de potência é compatível com a série de potência
+	da função que se está aproximando. Isso significa que os Aproximantes de Taylor são casos particulares dos Aproximantes
+	de Padé.
+
+	Em termos gerais, o resultado produzido pela aproximação de Padé se mostra mais preciso
+	que o truncamento da série de Taylor da função, produzindo, inclusive, resultados em casos
+	onde a série de Taylor da função não converge. Por esse motivo, é comum utilizar o método de
+	Padé nos cálculos computacionais, ainda que como funções auxiliares.
+
+	Além disso, os aproximantes de Padé não somente convergem mais rapidamente que a série de Taylos como,
+	também, se estende a regiões muito além do raio de convergência da mesma. Os coeficientes dos aproximantes
+	de Padé são baseados apenas nos coeficientes da Série de Taylor da função que se deseja aproximar.
+
+	\section{Definição}
+	Dada uma função $f$ e $m,n \in \mathbb{Z}$ com $m\geq0, n\geq1$, o \textit{Aproximante de Padé}
+	de $f$ de ordem $[m/n]$ é a função racional $R$, denotada por $[m/n]_f(x)$, dada por:
+	$$R(x) = \frac{\sum_{j=0}^{m}{a_jx^j}}{1 + \sum_{k=1}{n}{b_kx^k}} = \frac{a_0 + a_1x + \dots + a_mx^m}{1 + b_0 + \dots + b_nx^n}$$
+
+	Percebe-se que, ao tomar as derivadas da função $f$ e as derivadas de $R$, ambas com $x=0$, tem-se que a $k$-ésima derivada
+	de $f$ em $x=0$ é igual à $k$-ésima derivada de $R$ em $x=0$. Por consequência,
+	$$f^{(m+n)} = R^{(m+n)}$$
+
+	Em decorrência disso, os coeficiêntes da função racional que define o Aproximante de Padé são únicas. Ou seja,
+	$a_i\,,i\in\{0,\dots,m\}$ e $b_j\,,j\in\{1,\dots,n\}$ só podem ser unicamente determinados. Por esse motivo, $b_0 = 1$,
+	caso contrário o numerador de $R$ poderia ser multiplicado por constantes, que tirariam sua unicidade (normalização).
+
+	\section{Cálculo Computacional}
+	\label{sec:dev}
+	Computacionalmente, os aproximantes de Padé podem ser calculados pelo Algoritmo Epsilon, desenvolvido por Peter Wynn,
+	através de transformações em somas parciais. Dada a série de Taylor
+	$$T_n(x) = c_0 + c_1x + \dots + c_nx^n$$
+	onde $c_k = \frac{f^{(k)}(0)}{k!}$.
+
+	Além disso, se $f$ for escrita como uma série de potências formalmente, pode-se aplicar o Algoritmo de Euclides para a divisão
+	entre polinômios, tendo assim o maior divisor comum:
+	$$R(x) = P(x)/Q(x) = T_{m+n}(x)\;mod\;x^{m+n+1}$$
+
+	Assim, deve existir $K(x)$ tal que:
+	$$P(x) = Q(x)\times T_{m+n}(x) + K(x)\times x^{m+n+1}$$
+
+	Dessa forma, $f(x) - R(x)$ deve ter uma raiz $r$ com multiplicidade $m+n+1$. Para que isso ocorra, os coeficientes $x^k$ do numerador
+	devem se anular:
+	\begin{equation}\label{eq:max}
+	\sum_{i=0}^{k}{(c_ib_{k-i} - a_k)} = 0\;k \in \{0, \dots, m+n\}
+	\end{equation}
+
+	Dessa forma, encontram-se os coeficientes para os aproximantes de Padé.
+
+	Isso implica também que $f$ e o aproximante de Padé $R$ diferem apenas por termos da ordem $x^{m+n+1}$. Como
+	os termos se tornam cada vez menores, o Teorema do Resto garante a precisão baseada na escolha de $m$ e $n$.
+
+	\section{Exemplos}
+	\paragraph{$f(x) = e^x$}
+	Considerando tal função, desenvolver-se-á o Aproximante de Padé $f(x) = e^x$ considerando $m = 2$ e $n = 2$.
+	Dessa forma, deseja-se:
+	$$R(x) = \frac{a_0 + a_1x + a_2x^2}{1 + b_1x + b_2x^2}$$
+
+	Além disso, sabe-se que a série de Taylor de $f(x)$ é tal que:
+	$$f(x) = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \dots$$
+
+	Dessa forma, expandindo \ref{eq:max} desenvolvida na Seção \ref{sec:dev}:
+	\begin{align}
+		c_0 \times b_0 = a_0 & \implies a_0 = b_0 = 1\\
+		c_0 \times b_1 + c_1 \times b_0 = a_1 & \implies b_1 + 1 = a_1\\
+		c_0 \times b_2 + c_1 \times b_1 + c_2 \times b_0 = a_2 & \implies b_2 + b_1 + \frac{1}{2} = a_2\\
+		c_1 \times b_2 + c_2 \times b_1 + c_3 \times b_0 = 0 & \implies b_2 + \frac{b_1}{2} + \frac{1}{6} = 0\\
+		c_2 \times b_2 + c_3 \times b_1 + c_4 \times b_0 = 0 & \implies \frac{b_2}{6} + \frac{b_1}{6} + \frac{1}{24} = 0\\
+	\end{align}
+	O que gera um \textbf{Sistema de Equações Lineares}. Aplicando técnicas de resolução, tem-se:
+	$$a_0 = b_0 = 1$$
+	$$b_1 = \frac{-1}{2}$$
+	$$b_2 = \frac{1}{12}$$
+	$$a_1 = \frac{1}{2}$$
+	$$a_2 = \frac{1}{12}$$
+	Dessa maneira, tem-se $R(x)$ como sendo:
+	$$f(x) \approx R(x) = \frac{1 + \frac{x}{2} + \frac{x^2}{12}}{1 - \frac{x}{2} + \frac{x^2}{12}} = \frac{12 + 6x + x^2}{12 - 6x + x^2} = \frac{(x+3)^2 + 3}{(x-3)^2 + 3}$$
+	$$\iff$$
+	$$e^x \approx \frac{(x+3)^2 + 3}{(x-3)^2 + 3}$$
 	\bibliographystyle{sbc}
 	\bibliography{references}
-
+	\nocite{*}
 \end{document}

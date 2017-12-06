@@ -9,12 +9,6 @@ compile:
 	@pdflatex --interaction=batchmode pade 2>NUL
 	@pdflatex --interaction=batchmode pade 2>NUL
 
-	@pdflatex --interaction=batchmode chebyshev 2>NUL
-	@-bibtex	chebyshev.aux 2>NUL
-	@-makeindex chebyshev.tex 2>NUL
-	@pdflatex --interaction=batchmode chebyshev 2>NUL
-	@pdflatex --interaction=batchmode chebyshev 2>NUL
-
 clear: compile
 	@rm -f *.synctex.gz
 	@rm -f *.aux
@@ -37,4 +31,3 @@ clear_W: compile
 
 execute: clear_W
 	@start "" pade.pdf
-	@start "" chebyshev.pdf
